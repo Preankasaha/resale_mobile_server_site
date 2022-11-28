@@ -78,7 +78,13 @@ async function run() {
             res.send(myProduct);
         })
 
-     
+        // booking get api for my orders
+        app.get('/bookings', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const bookings = await bookingCollection.find(query).toArray();
+            res.send(bookings);
+        })
 
         //booking post api
         app.post('/bookings', async (req, res) => {
