@@ -56,6 +56,12 @@ async function run() {
             res.send(categories);
         })
 
+        //all products
+        // app.get('/category', async (req, res) => {
+        //     const query = {};
+        //     const products = await productCollection.find(query).toArray();
+        //     res.send(products);
+        // })
 
         // products by category api with category/:id route
 
@@ -66,12 +72,22 @@ async function run() {
             res.send(products);
         })
 
-         //all products
-        // app.get('/category', async (req, res) => {
-        //     const query = {};
-        //     const products = await productCollection.find(query).toArray();
-        //     res.send(products);
-        // })
+        //single product api
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const products = await productCollection.find(query).toArray();
+            res.send(products);
+        })
+
+        //product api for post
+        app.post('/product', async (req, res) => {
+            const product = req.body;
+            const result = await productCollection.insertOne(product);
+            res.send(result);
+        })
+
+  
 
     }
     finally {
