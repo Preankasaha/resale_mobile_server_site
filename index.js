@@ -6,7 +6,20 @@ require('dotenv').config();
 const port = process.env.PORT || 5000;
 
 const app = express();
-app.use(cors());
+const whitelist = ['http://localhost:3000', 'https://resale-mobile.web.app']
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true,
+}
+app.use(cors(corsOptions))
+
+
 app.use(express.json());
 
 console.log(process.env.DB_USER);
@@ -114,10 +127,10 @@ async function run() {
         })
 
         //reported delete api
-        app.delete('/repported/:id', async (req, res) => {
+        app.delete('/reporteds/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
-            const result = await userCollection.deleteOne(filter)
+            const result = await productCollection.deleteOne(filter)
             res.send(result);
         })
 
@@ -148,7 +161,7 @@ async function run() {
         })
 
         //advertise get api
-        app.get('/advertises', verifyJWT, async (req, res) => {
+        app.get('/advertises', async (req, res) => {
             const query = { advertise: 'advertise' }
             const items = await productCollection.find(query).toArray();
             res.send(items);
